@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestError(t *testing.T) {
+func TestErrorCompatibility(t *testing.T) {
 	t.Run("errors.Is compatibility", func(t *testing.T) {
-		e1 := Wrap(nil, "foobar", nil)
-		e2 := Wrap(e1, "foobar 2", nil)
-		e3 := Wrap(e2, "foobar 3", nil)
-		e4 := Wrap(e2, "foobar 4", nil)
+		e1 := Wrap(nil, "foobar")
+		e2 := Wrap(e1, "foobar 2")
+		e3 := Wrap(e2, "foobar 3")
+		e4 := Wrap(e2, "foobar 4")
 
 		assert.True(t, errors.Is(e3, e1))
 		assert.True(t, errors.Is(e3, e2))
@@ -22,7 +22,7 @@ func TestError(t *testing.T) {
 		assert.True(t, errors.Is(e4, e1))
 
 		someFunc := func() error {
-			return Wrap(e1, "someFunc error", nil)
+			return Wrap(e1, "someFunc error")
 		}
 
 		someErr := someFunc()
@@ -38,8 +38,8 @@ func TestError(t *testing.T) {
 	})
 
 	t.Run("errors.Is compatibility", func(t *testing.T) {
-		e1 := Wrap(nil, "foobar", nil)
-		e2 := Wrap(e1, "foobar 2", nil)
+		e1 := Wrap(nil, "foobar")
+		e2 := Wrap(e1, "foobar 2")
 		e3 := fmt.Errorf("foobar 3: %w", e2)
 
 		var e4 *Error
@@ -47,8 +47,8 @@ func TestError(t *testing.T) {
 		assert.Equal(t, "foobar 2: foobar", e4.Error())
 
 		customerErr1 := customErr{msg: "custom foobar"}
-		e5 := Wrap(customerErr1, "foobar 5", nil)
-		e6 := Wrap(e5, "foobar 6", nil)
+		e5 := Wrap(customerErr1, "foobar 5")
+		e6 := Wrap(e5, "foobar 6")
 
 		var customerErr2 customErr
 		assert.True(t, errors.As(e6, &customerErr2))

@@ -5,9 +5,9 @@ import (
 )
 
 type Error struct {
-	Inner           error
+	inner           error
+	contextual      map[string]any
 	FriendlyMessage string
-	ContextualData  map[string]interface{}
 }
 
 func (e *Error) Error() string {
@@ -40,7 +40,7 @@ func (e *Error) Is(target error) bool {
 		return true
 	}
 
-	inner := e.Inner
+	inner := e.inner
 	for {
 		if inner == nil {
 			return false
@@ -59,13 +59,26 @@ func (e *Error) Unwrap() error {
 		return nil
 	}
 
-	return e.Inner
+	return e.inner
 }
 
-func Wrap(inner error, friendlyMessage string, contextualData map[string]interface{}) *Error {
-	return &Error{
-		Inner:           inner,
+func Wrap(inner error, friendlyMessage string, options ...Option) *Error {
+	e := &Error{
+		inner:           inner,
 		FriendlyMessage: friendlyMessage,
-		ContextualData:  contextualData,
+	}
+
+	for _, opt := range options {
+		opt(e)
+	}
+
+	return e
+}
+
+type Option func(e *Error)
+
+func ContextualOption(key string, value any) Option {
+	return func(e *Error) {
+		e.contextual[key] = value
 	}
 }
