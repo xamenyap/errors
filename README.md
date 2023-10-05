@@ -22,9 +22,9 @@ func Exec() error {
   
   // the error message can contain low level details that we want to hide with a friendly message
   return errors.Wrap(err, "cannot create new product", 
-	  errors.ContextualOption("package", "mydatabase"), 
-	  errors.ContextualOption("query", "INSERT INTO Products VALUES ..."), 
-	  )
+    errors.ContextualOption("package", "mydatabase"), 
+    errors.ContextualOption("query", "INSERT INTO Products VALUES ..."), 
+  )
 }
 ```
 
