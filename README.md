@@ -42,14 +42,14 @@ func createProduct() http.HandlerFunc {
     if err := mydatabase.Exec(); err != nil {
       contextualErr, ok := err.(*errors.Error)
 	  if ok {
-		// use your favorite logger to log contextualErr and its contextual data, 
-		// then return the friendly message to your client  
-		http.Error(w, contextualErr.FriendlyMessage, http.StatusInternalServerError)
+        // use your favorite logger to log contextualErr and its contextual data, 
+        // then return the friendly message to your client  
+        http.Error(w, contextualErr.FriendlyMessage, http.StatusInternalServerError)
         return
       }
 	  
-	  http.Error(w, err.Error(), http.StatusInternalServerError)
-	  return 
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return 
     }
 
     w.WriteHeader(http.StatusCreated)
