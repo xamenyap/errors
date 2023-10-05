@@ -68,11 +68,23 @@ func (e *Error) Unwrap() error {
 	return e.inner
 }
 
+// Contextual returns the value associated to Error by its key.
+// The second returned param will be false if Error is nil, or when the key does not exist.
+func (e *Error) Contextual(key string) (any, bool) {
+	if e == nil {
+		return nil, false
+	}
+
+	value, ok := e.contextual[key]
+	return value, ok
+}
+
 // Wrap wraps an inner error, along with a friendly message.
 func Wrap(inner error, friendlyMessage string, options ...Option) *Error {
 	e := &Error{
 		inner:           inner,
 		FriendlyMessage: friendlyMessage,
+		contextual:      make(map[string]any),
 	}
 
 	for _, opt := range options {

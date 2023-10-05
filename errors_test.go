@@ -63,3 +63,31 @@ type customErr struct {
 func (ce customErr) Error() string {
 	return ce.msg
 }
+
+func TestError_Contextual(t *testing.T) {
+	t.Run("key exists", func(t *testing.T) {
+		e1 := Wrap(nil, "foobar",
+			ContextualOption("foo", "bar"),
+			ContextualOption("fooz", "barz"),
+		)
+
+		foo, fooExist := e1.Contextual("foo")
+		fooz, foozExist := e1.Contextual("fooz")
+
+		assert.True(t, fooExist)
+		assert.Equal(t, "bar", foo)
+		assert.True(t, foozExist)
+		assert.Equal(t, "barz", fooz)
+	})
+
+	t.Run("key does not exist", func(t *testing.T) {
+		e1 := Wrap(nil, "foobar",
+			ContextualOption("foo", "bar"),
+			ContextualOption("fooz", "barz"),
+		)
+
+		_, fooExist := e1.Contextual("fooo")
+
+		assert.False(t, fooExist)
+	})
+}
